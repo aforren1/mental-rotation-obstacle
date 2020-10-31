@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import itertools as it
 import csv
 
+import cv2
+from pprint import pformat
 vis = False
 """
 Generating a block:
@@ -61,18 +63,25 @@ co.restore()  # restore default orientation
 # plt.imshow(obstacle_data, origin='upper')
 # plt.show()
 # now iterate through all possible orientations, by 1deg
-letter_angles = np.radians(np.arange(-60, 61, 1))
+letter_angles = np.radians(np.arange(-90, 91, 1))
 # position relative to center
 # radii = np.arange(75, 126, 25)  # in pixels
 radii = [60, 80, 100]
-circle_angles = np.arange(0, 2 * np.pi, np.pi / 8)
+circle_angles = np.arange(0, 2 * np.pi, np.pi / 16)
 flips = [True, False]
 
 output = []
 if vis:
     plt.show(block=False)
 
-for radius, circle_angle, letter, flip in it.product(radii, circle_angles, letters, flips):
+cl.set_font_size(20)
+
+prods = list(it.product(radii, circle_angles, letters, flips))
+
+writer = cv2.VideoWriter('opts.mp4',
+                         cv2.VideoWriter_fourcc(*'mp4v'),
+                         60, (800, 800), False)
+for radius, circle_angle, letter, flip in prods:
     for letter_angle in letter_angles:
 
         letter_data[:] = 0
@@ -91,22 +100,33 @@ for radius, circle_angle, letter, flip in it.product(radii, circle_angles, lette
         cl.set_source_surface(letters[letter], 0, 0)
 
         cl.paint()
-
         intersect = np.sum((letter_data > 0) & (obstacle_data > 0))
-        if vis:
-            plt.imshow((letter_data > 0) | (obstacle_data > 0), origin='upper')
-            # plt.show(block=False)
-            plt.pause(0.02)
-            plt.clf()
         foo = {'radius': radius,
-               'circle_angle': circle_angle,
-               'letter_angle': letter_angle,
+               'circle_angle': np.degrees(circle_angle),
+               'letter_angle': np.degrees(letter_angle),
                'letter': letter,
                'flip': int(flip),
                'pix_intersect': intersect,
                }
-        output.append(foo)
         cl.restore()
+        cl.move_to(50, 50)
+        for count, k in enumerate(foo):
+            try:
+                st = f'{k}: {foo[k]:.2f}'
+            except ValueError:
+                st = f'{k}: {foo[k]}'
+            cl.show_text(st)
+            cl.move_to(50, 50)
+            cl.rel_move_to(0, 30 * (count + 1))
+        either_or = (letter_data > 0) | (obstacle_data > 0)
+        writer.write(either_or.astype('uint8') * 255)
+        if vis:
+            plt.imshow(either_or, origin='upper')
+            # plt.show(block=False)
+            plt.pause(0.02)
+            plt.clf()
+
+        output.append(foo)
 
 print(len(output))
 
