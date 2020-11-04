@@ -3,6 +3,11 @@ local devel: `npm run start` (no data saving, but everything else)
 
 Production test: `npm run build && netlify dev`
 
+## Order of events
+
+1. Practice (no rotation-- just random flipped/not practice until 4 consecutive correct)
+2. Real deal (read from trial table)
+
 ## Notes
 
 - Keep obstacle on the screen-- flash the letter of interest
