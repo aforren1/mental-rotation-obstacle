@@ -1,5 +1,6 @@
 import log from '../utils/logger'
 //import scheds from '../../scheds/sched.json'
+import trials from '../../assets/trials.json'
 
 export default class TitleScene extends Phaser.Scene {
   constructor() {
@@ -7,21 +8,53 @@ export default class TitleScene extends Phaser.Scene {
   }
   preload() {
     // load feedback images (check? x? sparks?)
+    this.load.image('f', 'assets/f_white.png')
+    this.load.image('r', 'assets/r_white.png')
+    this.load.image('check', 'assets/check_small.png')
+    this.load.image('x', 'assets/x_small.png')
   }
   create() {
     let height = this.game.config.height
     let center = height / 2
 
+    this.add.particles('f').createEmitter({
+      x: { min: 0, max: 800, random: true },
+      y: { min: -80, max: -50 },
+      gravityY: 800,
+      frequency: 300,
+      alpha: { start: 0.15, end: 0 },
+      bounce: 1,
+      bounds: { x: 0, y: 0, width: 800, height: 800 },
+      collideTop: false,
+      lifespan: 2000,
+      rotate: { min: 0, max: 360 },
+    })
+
+    this.add.particles('r').createEmitter({
+      x: { min: 0, max: 800, random: true },
+      y: { min: -80, max: -50 },
+      gravityY: 700,
+      frequency: 300,
+      alpha: { start: 0.15, end: 0 },
+      delay: 400,
+      lifespan: 2000,
+      rotate: { min: 0, max: 360 },
+      bounce: 1,
+      bounds: { x: 0, y: 0, width: 800, height: 800 },
+      collideTop: false,
+    })
+
     this.add
-      .text(center, center - 200, 'Imagine.', {
+      .text(center, center - 200, 'MIRЯOR', {
         fontSize: 160,
         fontFamily: 'Arial',
-        fontStyle: 'italic',
+        fontStyle: 'bold',
+        padding: 20,
       })
       .setOrigin(0.5, 0.5)
 
     let start_txt = this.add
-      .text(center, center + 300, 'Click the left mouse\nbutton to start.', {
+      .text(center, center + 250, 'Click the 🠜 (left)\nkey to start.', {
         fontFamily: 'Verdana',
         fontStyle: 'bold',
         fontSize: 60,
@@ -41,11 +74,19 @@ export default class TitleScene extends Phaser.Scene {
       yoyo: true,
     })
 
-    this.input.once('pointerdown', (ptr) => {
-      // I wish I could do both at the same time, but after the fullscreen
-      // comes on it releases the pointer lock??
-      //this.input.mouse.requestPointerLock()
-      this.scale.startFullscreen()
+    this.input.keyboard.once('keydown-LEFT', (evt) => {
+      // https://supernapie.com/blog/hiding-the-mouse-in-a-ux-friendly-way/
+      // we don't need the cursor, but we also don't need pointer lock or the like
+      let canvas = this.sys.canvas
+      canvas.style.cursor = 'none'
+      canvas.addEventListener('mousemove', () => {
+        canvas.style.cursor = 'default'
+        clearTimeout(mouseHideTO)
+        let mouseHideTO = setTimeout(() => {
+          canvas.style.cursor = 'none'
+        }, 1000)
+      })
+      // fade out
       this.tweens.addCounter({
         from: 255,
         to: 0,
@@ -55,7 +96,7 @@ export default class TitleScene extends Phaser.Scene {
           this.cameras.main.setAlpha(v / 255)
         },
         onComplete: () => {
-          this.input.mouse.requestPointerLock()
+          this.scene.start('MainScene', { source: 'title', trials: trials })
         },
       })
     })

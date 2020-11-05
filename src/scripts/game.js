@@ -7,8 +7,8 @@ import UAParser from 'ua-parser-js'
 
 import RoundRectanglePlugin from 'phaser3-rex-plugins/plugins/roundrectangle-plugin.js'
 import BBCodeTextPlugin from 'phaser3-rex-plugins/plugins/bbcodetext-plugin.js'
+import TextTypingPlugin from 'phaser3-rex-plugins/plugins/texttyping-plugin.js'
 import TitleScene from './scenes/titleScene'
-import InstructScene from './scenes/instructScene'
 import MainScene from './scenes/mainScene'
 import EndScene from './scenes/endScene'
 //import scheds from '../scheds/sched.json'
@@ -25,7 +25,10 @@ const phaser_config = {
     width: small_dim,
     height: small_dim,
   },
-  scene: [TitleScene, InstructScene, MainScene, EndScene],
+  scene: [TitleScene, MainScene, EndScene],
+  audio: {
+    noAudio: true,
+  },
   plugins: {
     global: [
       {
@@ -36,6 +39,11 @@ const phaser_config = {
       {
         key: 'rexBBCodeTextPlugin',
         plugin: BBCodeTextPlugin,
+        start: true,
+      },
+      {
+        key: 'rexTextTypingPlugin',
+        plugin: TextTypingPlugin,
         start: true,
       },
     ],

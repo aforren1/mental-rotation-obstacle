@@ -144,7 +144,7 @@ var Phaser = {
   Scale: require('../../node_modules/phaser/src/scale'),
   Scene: require('../../node_modules/phaser/src/scene/Scene'),
   Scenes: require('../../node_modules/phaser/src/scene'),
-  Sound: require('../../node_modules/phaser/src/sound'),
+  //Sound: require('../../node_modules/phaser/src/sound'),
   Structs: require('../../node_modules/phaser/src/structs'),
   Textures: require('../../node_modules/phaser/src/textures'),
   //Tilemaps: require('../../node_modules/phaser/src/tilemaps'),

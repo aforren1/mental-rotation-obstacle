@@ -3,6 +3,8 @@ dist
 *.env
 npm-debug.log
 *.Rhistory
+opts.mp4
+out.csv
 
 # Local Netlify folder
 .netlify

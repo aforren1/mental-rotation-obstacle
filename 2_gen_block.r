@@ -1,5 +1,6 @@
 library(data.table)
 library(ggplot2)
+library(jsonlite)
 
 dat <- fread('~/actlab/mental-rotation-obstacle/out.csv')
 dat[, radius := round(radius)]
@@ -72,21 +73,6 @@ we want a few things:
 "
 
 ####
-"
-radius==60
-'f', flip=1, circle_angle=191, letter_angle <= -60 intersects (controls: letter_angle > -60; some other circle_angle; flip=0; letter_angle with reversed sign)
-'f', flip=0, circle_angle=315, letter_angle >= 60 intersects
-'r', flip=0/1, circle_angle=225, letter_angle <= -60 intersects
-
-
-radius==80
-'f', flip=0, circle_angle=270, letter_angle <= -60 intersects
-'r', flip=0, circle_angle=270, letter_angle <= -60 intersects
-
-"
-
-
-####
 trial_types <- list(
   ## F
   list(letter='f', radius=60, flip=1, letter_angle=-60, circle_angle=191), # collide
@@ -108,6 +94,8 @@ trial_types <- list(
   list(letter='r', radius=60, flip=0, letter_angle=-60, circle_angle=326), # control
   list(letter='r', radius=100, flip=0, letter_angle=60, circle_angle=56), # collide
   list(letter='r', radius=100, flip=0, letter_angle=60, circle_angle=180) # control
+  ## a few 30 deg
+  
   
 )
 tmp4 <- rbindlist(trial_types)
@@ -117,16 +105,23 @@ tmp5 <- merge(out, tmp4)
 
 # add controls-- all the possible ones have valid 0 positions, so we can just duplicate twice
 # and set letter_angle=0 (which also sort of works out)
-ctrls <- tmp5[rep(tmp5[, .I], 2)]
+ctrls <- tmp5[rep(tmp5[, .I], 1)]
 ctrls[, letter_angle := 0]
 ctrls[, intersect := FALSE]
 ctrls[, cumu_intersect := 0]
 
-exps <- tmp5[rep(tmp5[, .I], 5)]
+exps <- tmp5[rep(tmp5[, .I], 1)]
 
-# these are all the "real" trials someone will experience
-# (incl. repeats: 5 each for rotated, 2 each for controls)
-# up to the experimenter to shuffle and add warmups
-all_together <- rbind(ctrls, exps)
+# now we'll convert to JSON for consumption by the exp
+# one warmup block
 
+# specify explicit names (we probably won't make it any longer, anyway)
+# need to specify number of blocks within the task (i.e. do "real" twice)
+out_json <- toJSON(list(
+  warmup=ctrls[rep(ctrls[, .I], 2)], 
+  real=rbind(ctrls[rep(ctrls[, .I], 1)],
+             exps[rep(exps[, .I], 3)])
+), auto_unbox=TRUE)
+
+write(out_json, file='~/actlab/mental-rotation-obstacle/trials.json')
 

@@ -5,11 +5,14 @@ Production test: `npm run build && netlify dev`
 
 ## Order of events
 
-1. Practice (no rotation-- just random flipped/not practice until 4 consecutive correct)
-2. Real deal (read from trial table)
+1. Title screen
+2. Basic instructions (< arrow if flipped, > if normal)
+3. Practice (no obstacle)
+4. Real deal (read from trial table)
 
 ## Notes
 
+- Run `1_gen_block.py` to generate _all_ possible rotations/collisions via Cairo, then `2_gen_block.r` to pick the feasible ones.
 - Keep obstacle on the screen-- flash the letter of interest
 - Use monospace (same height too? or multiple heights?)
 - Fixed 1s ITI

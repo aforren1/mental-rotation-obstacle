@@ -29,7 +29,7 @@ module.exports = {
     },
   },
   plugins: [
-    new HtmlWebpackPlugin({ gameName: 'Imagine.', template: 'src/index.html' }),
+    new HtmlWebpackPlugin({ gameName: 'MIRЯOR', template: 'src/index.html' }),
     new CopyWebpackPlugin({
       patterns: [
         { from: 'src/assets', to: 'assets' },
