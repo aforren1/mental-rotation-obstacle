@@ -10,7 +10,7 @@ let sets = {
   align: 'center',
 }
 
-export default class Examples extends Phaser.GameObjects.Container {
+export class Examples extends Phaser.GameObjects.Container {
   constructor(scene, x, y, alpha) {
     // pile of examples
     let a = scene.add.image(100, -40, 'f').setAngle(30)
@@ -18,9 +18,9 @@ export default class Examples extends Phaser.GameObjects.Container {
     let c = scene.add.image(240, -40, 'f')
     let d = scene.add.image(270, 50, 'r').setAngle(15)
     //
-    let e = scene.add.image(-100, -40, 'f').setAngle(30).setFlipX(true)
-    let f = scene.add.image(-170, 20, 'r').setAngle(-60).setFlipX(true)
-    let g = scene.add.image(-240, -40, 'f').setFlipX(true)
+    let e = scene.add.image(-170, 20, 'f').setFlipX(true)
+    let f = scene.add.image(-100, -40, 'r').setAngle(-10).setFlipX(true)
+    let g = scene.add.image(-240, -40, 'f').setAngle(-45).setFlipX(true)
     let h = scene.add.image(-270, 50, 'r').setAngle(15).setFlipX(true)
 
     //
@@ -30,6 +30,17 @@ export default class Examples extends Phaser.GameObjects.Container {
     let larrow = scene.add.text(-200, -150, '🠜 (left)', sets).setOrigin(0.5, 0.5)
     let rarrow = scene.add.text(200, -150, '(right) 🠞', sets).setOrigin(0.5, 0.5)
     super(scene, x, y, [a, b, c, d, e, f, g, h, left, right, larrow, rarrow])
+    this.alpha = alpha
+    scene.add.existing(this)
+  }
+}
+
+export class Examples2 extends Phaser.GameObjects.Container {
+  constructor(scene, x, y, alpha) {
+    let f = scene.add.image(30, 30, 'f').setAngle(45).setFlipX(true)
+    let barrier = new Phaser.GameObjects.Polygon(scene, 0, 0, [0, -50, -50, 50, 50, 50], 0x777777)
+    let outline = scene.add.rexRoundRectangle(0, 0, 300, 250, 5, 0, 0).setStrokeStyle(5, 0xee82ee)
+    super(scene, x, y, [f, barrier, outline])
     this.alpha = alpha
     scene.add.existing(this)
   }

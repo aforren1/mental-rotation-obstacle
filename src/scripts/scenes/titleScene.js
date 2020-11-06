@@ -1,7 +1,5 @@
 import log from '../utils/logger'
 //import scheds from '../../scheds/sched.json'
-import trials from '../../assets/trials.json'
-import shuffleArray from '../utils/shuffle'
 
 export default class TitleScene extends Phaser.Scene {
   constructor() {
@@ -98,10 +96,7 @@ export default class TitleScene extends Phaser.Scene {
         },
         onComplete: () => {
           // randomize warmup, real trials
-          shuffleArray(trials.warmup)
-          shuffleArray(trials.real)
-          console.log(trials)
-          this.scene.start('MainScene', { source: 'title', trials: trials })
+          this.scene.start('MainScene', 'title')
         },
       })
     })

@@ -11,7 +11,6 @@ import TextTypingPlugin from 'phaser3-rex-plugins/plugins/texttyping-plugin.js'
 import TitleScene from './scenes/titleScene'
 import MainScene from './scenes/mainScene'
 import EndScene from './scenes/endScene'
-//import scheds from '../scheds/sched.json'
 
 // let small_dim = Math.min(screen.width, screen.height)
 let small_dim = 800 // nothing's going to be perfectly scaled, but that's fine?
@@ -56,10 +55,6 @@ window.addEventListener('load', () => {
   // TODO: figure out prolific/mturk/elsewhere here (URL parsing)
   // Remember that localStorage *only stores strings*
   const url_params = new URL(window.location.href).searchParams
-  // add flag to clear localStorage
-  if (url_params.get('clear') !== null) {
-    localStorage.clear()
-  }
   // If coming from prolific, use that ID. Otherwise, generate some random chars
   let id = localStorage['id']
   if (typeof id === 'undefined') {
@@ -67,15 +62,6 @@ window.addEventListener('load', () => {
     id = url_params.get('PROLIFIC_PID') || url_params.get('id') || randomString(10)
     localStorage['id'] = id
     // TODO: assert prolific ID matches one in localStorage
-  }
-
-  let group = localStorage['group']
-  if (typeof group === 'undefined') {
-    // assign group (either in URL or randomly) 1-N
-    // note we lop of the -1, because the last element is the test one
-    let group_count = Object.keys(scheds).length - 1
-    group = (url_params.get('group') || Math.floor(Math.random() * group_count) + 1).toString()
-    localStorage['group'] = group
   }
 
   let user_config = {
@@ -90,9 +76,6 @@ window.addEventListener('load', () => {
     height: game.config.height,
     renderer: game.config.renderType === Phaser.CANVAS ? 'canvas' : 'webgl',
     user_agent: new UAParser().getResult(),
-    fullscreen_supported: document.fullscreenEnabled, // this is pretty important for us?
-    group: group,
-    debug: url_params.get('debug') !== null, // if debug !== null, use flashing square
   }
   game.user_config = user_config // patch in to pass into game
   // set up for user
