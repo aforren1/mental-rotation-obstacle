@@ -93,10 +93,22 @@ trial_types <- list(
   list(letter='r', radius=60, flip=0, letter_angle=-60, circle_angle=214), # collide
   list(letter='r', radius=60, flip=0, letter_angle=-60, circle_angle=326), # control
   list(letter='r', radius=100, flip=0, letter_angle=60, circle_angle=56), # collide
-  list(letter='r', radius=100, flip=0, letter_angle=60, circle_angle=180) # control
+  list(letter='r', radius=100, flip=0, letter_angle=60, circle_angle=180), # control
   ## a few 30 deg
-  
-  
+  #list(letter='f', radius=100, flip=1, letter_angle=30, circle_angle=56), # collide
+  list(letter='f', radius=100, flip=1, letter_angle=-30, circle_angle=124), # collide
+  #list(letter='f', radius=100, flip=1, letter_angle=30, circle_angle=79), # control
+  list(letter='f', radius=80, flip=1, letter_angle=-30, circle_angle=11), # control
+  #
+  list(letter='f', radius=100, flip=0, letter_angle=30, circle_angle=56), # collide
+  #list(letter='f', radius=100, flip=0, letter_angle=-30, circle_angle=124), # collide
+  list(letter='f', radius=100, flip=0, letter_angle=30, circle_angle=101), # control
+  #list(letter='f', radius=80, flip=0, letter_angle=-30, circle_angle=169), # control
+  #
+  list(letter='r', radius=100, flip=1, letter_angle=-30, circle_angle=124), # collide
+  list(letter='r', radius=100, flip=1, letter_angle=-30, circle_angle=79), # control
+  list(letter='r', radius=100, flip=0, letter_angle=30, circle_angle=56), # collide
+  list(letter='r', radius=80, flip=0, letter_angle=30, circle_angle=247) # control
 )
 tmp4 <- rbindlist(trial_types)
 
@@ -109,6 +121,8 @@ ctrls <- tmp5[rep(tmp5[, .I], 1)]
 ctrls[, letter_angle := 0]
 ctrls[, intersect := FALSE]
 ctrls[, cumu_intersect := 0]
+# fix the one duplicate in the control set
+ctrls[duplicated(ctrls), circle_angle := 34]
 
 exps <- tmp5[rep(tmp5[, .I], 1)]
 
@@ -116,12 +130,14 @@ exps <- tmp5[rep(tmp5[, .I], 1)]
 # one warmup block
 
 # specify explicit names (we probably won't make it any longer, anyway)
-# need to specify number of blocks within the task (i.e. do "real" twice)
-out_json <- toJSON(list(
+# reps taken care of here too, not randomization.
+# we'll divvy it up into 4 blocks 
+out_all <- list(
   warmup=ctrls[rep(ctrls[, .I], 2)], 
-  real=rbind(ctrls[rep(ctrls[, .I], 1)],
-             exps[rep(exps[, .I], 3)])
-), auto_unbox=TRUE)
+  real=rbind(ctrls[rep(ctrls[, .I], 2)],
+             exps[rep(exps[, .I], 4)])
+)
+out_json <- toJSON(out_all, auto_unbox=TRUE)
 
-write(out_json, file='~/actlab/mental-rotation-obstacle/trials.json')
+write(out_json, file='~/actlab/mental-rotation-obstacle/src/assets/trials.json')
 

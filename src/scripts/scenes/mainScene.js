@@ -42,7 +42,7 @@ export default class MainScene extends Phaser.Scene {
     this.instructions.visible = false
 
     this.any_start = this.add
-      .text(center, height - 150, 'Press any key to start.', {
+      .text(center, height - 150, 'Press any key to continue.', {
         fontFamily: 'Verdana',
         fontSize: 40,
         align: 'center',
