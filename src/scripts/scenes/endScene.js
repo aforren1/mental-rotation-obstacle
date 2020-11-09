@@ -13,7 +13,7 @@ export default class EndScene extends Phaser.Scene {
 
     window.removeEventListener('beforeunload', onBeforeUnload)
     this.add
-      .text(center, center, 'Thank you for participating!\nAutomatically redirecting\nin 10 seconds...', {
+      .text(center, center, 'Thank you for participating!\nRedirecting shortly...', {
         fontFamily: 'Verdana',
         fontSize: 30,
         align: 'center',
@@ -21,15 +21,14 @@ export default class EndScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
 
     let mostly = 'https://app.prolific.co/submissions/complete?cc='
-    this.time.delayedCall(10000, () => {
-      window.location.href = mostly + '4EC98559'
-    })
+    if (this.game.user_config.prolific_config.prolific_pid === null) {
+      mostly = 'https://google.com/?cc='
+    }
 
-    console.log('Data today:')
     let alldata = { config: this.game.user_config, data: today_data }
-    console.log(alldata)
 
     Promise.all(postData(alldata)).then((values) => {
+      window.location.href = mostly + '4EC98559'
       if (values[0] !== 500 || values[1] !== 500) {
       } else {
         log.error('Forwarding failed HARD')

@@ -307,6 +307,8 @@ export default class MainScene extends Phaser.Scene {
           this.tab.visible = true
           this.tab.alpha = 1
           this.time.delayedCall(5000, () => {
+            this.any_start.visible = true
+            this.any_start.alpha = 1
             this.input.keyboard.once('keydown-LEFT', (evt) => {
               this.tweens.add({
                 targets: [this.tab, this.any_start],
