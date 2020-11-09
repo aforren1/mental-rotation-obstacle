@@ -19,10 +19,10 @@ const states = Enum([
 ])
 
 const basic_txt =
-  'Press the [color=yellow][b]🠞 (right)[/b][/color] arrow key if the letter (R or F) is [color=yellow][b]NORMAL[/b][/color], and press the [color=violet][b]🠜 (left)[/b][/color] arrow key if the letter is [color=violet][b]MIRRORED[/b][/color] (Я or ꟻ). To make the game more challenging, the letters will often also be rotated.'
+  'Press the [color=yellow][b][img=right_arrow] (right)[/b][/color] arrow key if the letter (R or F) is [color=yellow][b]NORMAL[/b][/color], and press the [color=violet][b][img=left_arrow] (left)[/b][/color] arrow key if the letter is [color=violet][b]MIRRORED[/b][/color] (Я or ꟻ). To make the game more challenging, the letters will often also be rotated.'
 
 const main_txt =
-  'Now, there will be a [color=red]barrier[/color] in the center of the screen. Please ignore this barrier, and continue to press the [color=yellow][b]🠞 (right)[/b][/color] arrow key if the letter is [color=yellow]NORMAL[/color], and press the [color=violet][b]🠜 (left)[/b][/color] arrow key if the letter is [color=violet]MIRRORED[/color].'
+  'Now, there will be a [color=red]barrier[/color] in the center of the screen. Please ignore this barrier, and continue to press the [color=yellow][b][img=right_arrow] (right)[/b][/color] arrow key if the letter is [color=yellow]NORMAL[/color], and press the [color=violet][b][img=left_arrow] (left)[/b][/color] arrow key if the letter is [color=violet]MIRRORED[/color].'
 
 export default class MainScene extends Phaser.Scene {
   constructor() {
@@ -68,7 +68,7 @@ export default class MainScene extends Phaser.Scene {
     this.instructions.visible = false
 
     this.any_start = this.add
-      .text(center, height - 150, 'Press 🠜 to continue.', {
+      .rexBBCodeText(center, height - 150, 'Press [img=left_arrow] to continue.', {
         fontFamily: 'Verdana',
         fontSize: 40,
         align: 'center',
@@ -111,7 +111,7 @@ export default class MainScene extends Phaser.Scene {
       .rexBBCodeText(
         center,
         center + 300,
-        '[color=yellow][b]🠞 = NORMAL[/b][/color]   [color=violet][b]🠜 = MIRRORED[/b][/color]',
+        '[color=yellow][b][img=right_arrow] = NORMAL[/b][/color]   [color=violet][b][img=left_arrow] = MIRRORED[/b][/color]',
         {
           fontFamily: 'Verdana',
           fontSize: 30,

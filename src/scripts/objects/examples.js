@@ -27,8 +27,8 @@ export class Examples extends Phaser.GameObjects.Container {
     let left = scene.add.rexRoundRectangle(-200, 0, 300, 250, 5, 0, 0).setStrokeStyle(5, 0xee82ee)
     let right = scene.add.rexRoundRectangle(200, 0, 300, 250, 5, 0, 0).setStrokeStyle(5, 0xffff00)
 
-    let larrow = scene.add.text(-200, -150, '🠜 (left)', sets).setOrigin(0.5, 0.5)
-    let rarrow = scene.add.text(200, -150, '(right) 🠞', sets).setOrigin(0.5, 0.5)
+    let larrow = scene.add.rexBBCodeText(-200, -150, '[img=left_arrow] (left)', sets).setOrigin(0.5, 0.5)
+    let rarrow = scene.add.rexBBCodeText(200, -150, '(right) [img=right_arrow]', sets).setOrigin(0.5, 0.5)
     super(scene, x, y, [a, b, c, d, e, f, g, h, left, right, larrow, rarrow])
     this.alpha = alpha
     scene.add.existing(this)

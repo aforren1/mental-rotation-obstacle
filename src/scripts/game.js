@@ -56,13 +56,8 @@ window.addEventListener('load', () => {
   // Remember that localStorage *only stores strings*
   const url_params = new URL(window.location.href).searchParams
   // If coming from prolific, use that ID. Otherwise, generate some random chars
-  let id = localStorage['id']
-  if (typeof id === 'undefined') {
-    const randomString = (length) => [...Array(length)].map(() => (~~(Math.random() * 36)).toString(36)).join('')
-    id = url_params.get('PROLIFIC_PID') || url_params.get('id') || randomString(10)
-    localStorage['id'] = id
-    // TODO: assert prolific ID matches one in localStorage
-  }
+  const randomString = (length) => [...Array(length)].map(() => (~~(Math.random() * 36)).toString(36)).join('')
+  let id = url_params.get('PROLIFIC_PID') || url_params.get('id') || randomString(10)
 
   // if present at all, we're in debug mode
   let is_debug = url_params.get('debug') !== null

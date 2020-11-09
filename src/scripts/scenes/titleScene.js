@@ -11,6 +11,8 @@ export default class TitleScene extends Phaser.Scene {
     this.load.image('r', 'assets/r_white.png')
     this.load.image('check', 'assets/check_small.png')
     this.load.image('x', 'assets/x_small.png')
+    this.load.image('right_arrow', 'assets/right_arrow.png')
+    this.load.image('left_arrow', 'assets/left_arrow.png')
   }
   create() {
     let height = this.game.config.height
@@ -53,7 +55,7 @@ export default class TitleScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
 
     let start_txt = this.add
-      .text(center, center + 250, 'Click the 🠜 (left)\nkey to start.', {
+      .rexBBCodeText(center, center + 250, 'Click any key to start.', {
         fontFamily: 'Verdana',
         fontStyle: 'bold',
         fontSize: 60,
@@ -73,7 +75,7 @@ export default class TitleScene extends Phaser.Scene {
       yoyo: true,
     })
 
-    this.input.keyboard.once('keydown-LEFT', (evt) => {
+    this.input.keyboard.once('keydown', (evt) => {
       // https://supernapie.com/blog/hiding-the-mouse-in-a-ux-friendly-way/
       // we don't need the cursor, but we also don't need pointer lock or the like
       let canvas = this.sys.canvas
