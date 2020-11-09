@@ -124,15 +124,20 @@ export default class MainScene extends Phaser.Scene {
     this.txt_counter.visible = false
 
     this.tab = this.add
-      .text(center, center - 150, 'Take a break. Wait at least 5 seconds,\nthen press 🠜 to continue.', {
-        fontFamily: 'Verdana',
-        fontSize: 30,
-        wrap: {
-          mode: 'word',
-          width: 400,
-        },
-        align: 'center',
-      })
+      .rexBBCodeText(
+        center,
+        center - 150,
+        'Take a break. Wait at least 5 seconds,\nthen press [img=left_arrow] to continue.',
+        {
+          fontFamily: 'Verdana',
+          fontSize: 30,
+          wrap: {
+            mode: 'word',
+            width: 400,
+          },
+          align: 'center',
+        }
+      )
       .setOrigin(0.5, 0.5)
     this.tab.visible = false
   }
@@ -252,6 +257,7 @@ export default class MainScene extends Phaser.Scene {
                 event_time: evt.originalEvent.timeStamp,
                 trial: this.trial_counter,
                 trial_start_time: this.trial_start,
+                has_barrier: !this.is_intro,
               }
               dat.rt = dat.event_time - dat.trial_start_time
               dat.choice = dat.key === 'ArrowLeft' ? 1 : 0
