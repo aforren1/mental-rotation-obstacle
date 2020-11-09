@@ -29,10 +29,10 @@ export default class EndScene extends Phaser.Scene {
 
     Promise.all(postData(alldata)).then((values) => {
       window.location.href = mostly + '4EC98559'
-      if (values[0] !== 500 || values[1] !== 500) {
-      } else {
-        log.error('Forwarding failed HARD')
-      }
+      // if (values[0] !== 500 || values[1] !== 500) {
+      // } else {
+      //   log.error('Forwarding failed HARD')
+      // }
     })
   }
 }
