@@ -61,7 +61,7 @@
     "isomorphic-fetch": "^3.0.0",
     "loglevel": "^1.6.8",
     "mailgun-js": "github:highlycaffeinated/mailgun-js",
-    "netlify-cli": "^2.67.4",
+    "netlify-cli": "^2.68.0",
     "npm": "^6.14.8",
     "phaser": "^3.24.1",
     "phaser3-rex-plugins": "^1.1.20",

@@ -118,11 +118,10 @@ tmp5 <- merge(out, tmp4)
 # add controls-- all the possible ones have valid 0 positions, so we can just duplicate twice
 # and set letter_angle=0 (which also sort of works out)
 ctrls <- tmp5[rep(tmp5[, .I], 1)]
+ctrls <- ctrls[letter_angle < 0]
 ctrls[, letter_angle := 0]
 ctrls[, intersect := FALSE]
 ctrls[, cumu_intersect := 0]
-# fix the one duplicate in the control set
-ctrls[duplicated(ctrls), circle_angle := 34]
 
 exps <- tmp5[rep(tmp5[, .I], 1)]
 
@@ -133,11 +132,20 @@ exps <- tmp5[rep(tmp5[, .I], 1)]
 # reps taken care of here too, not randomization.
 # we'll divvy it up into 4 blocks 
 out_all <- list(
-  warmup=ctrls[rep(ctrls[, .I], 2)], 
+  warmup=rbind(ctrls[rep(ctrls[, .I], 1)],
+               exps[rep(exps[, .I], 2)]),
   real=rbind(ctrls[rep(ctrls[, .I], 2)],
              exps[rep(exps[, .I], 4)])
 )
 out_json <- toJSON(out_all, auto_unbox=TRUE)
 
 write(out_json, file='~/actlab/mental-rotation-obstacle/src/assets/trials.json')
+
+out_dbg <- list(
+  warmup=rbind(ctrls[1:4], exps[1:4]),
+  real=rbind(ctrls[1:4], exps[1:4])
+)
+
+dbg_json <- toJSON(out_dbg, auto_unbox=TRUE)
+write(dbg_json, file='~/actlab/mental-rotation-obstacle/src/assets/debug.json')
 

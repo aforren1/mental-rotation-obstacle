@@ -3,6 +3,7 @@ import { TypingText } from '../objects/typingtext'
 import { Enum } from '../utils/enum'
 import { Examples, Examples2 } from '../objects/examples'
 import trials from '../../assets/trials.json'
+import debug from '../../assets/debug.json'
 import shuffleArray from '../utils/shuffle'
 import merge_data from '../utils/merge'
 
@@ -28,21 +29,33 @@ export default class MainScene extends Phaser.Scene {
     super({ key: 'MainScene' })
     this._state = states.INSTRUCT
     this.entering = true
+    this.all_data = { warmup: [], real: [] }
   }
   create(source) {
     this.trial_counter = 0
     this.entering = true
+    this.state = states.INSTRUCT
     let height = this.game.config.height
     let center = height / 2
     this.center = center
     this.is_intro = source === 'title'
+    let is_debug = this.game.user_config.debug
     if (this.is_intro) {
-      // shuffle arrays once
-      shuffleArray(trials.warmup)
-      this.trial_table = trials.warmup
+      if (is_debug) {
+        shuffleArray(debug.warmup)
+        this.trial_table = debug.warmup
+      } else {
+        shuffleArray(trials.warmup)
+        this.trial_table = trials.warmup
+      }
     } else {
-      shuffleArray(trials.real)
-      this.trial_table = trials.real
+      if (is_debug) {
+        shuffleArray(debug.real)
+        this.trial_table = debug.real
+      } else {
+        shuffleArray(trials.real)
+        this.trial_table = trials.real
+      }
     }
     this.instructions = TypingText(this, center, 50, '', {
       fontFamily: 'Verdana',
@@ -108,6 +121,20 @@ export default class MainScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setVisible(false)
     this.txt_counter = this.add.text(10, 10, `1 / ${this.trial_table.length}`, { fontFamily: 'Arial', fontSize: 15 })
+    this.txt_counter.visible = false
+
+    this.tab = this.add
+      .text(center, center - 150, 'Take a break. Wait at least 5 seconds,\nthen press 🠜 to continue.', {
+        fontFamily: 'Verdana',
+        fontSize: 30,
+        wrap: {
+          mode: 'word',
+          width: 400,
+        },
+        align: 'center',
+      })
+      .setOrigin(0.5, 0.5)
+    this.tab.visible = false
   }
 
   update() {
@@ -138,6 +165,7 @@ export default class MainScene extends Phaser.Scene {
           if (!this.is_intro) {
             this.barrier.visible = true
           }
+          this.txt_counter.visible = true
           this.brief_instruct.visible = true
           let tl = this.tweens.createTimeline()
           this.countdown.scale = 0.5
@@ -227,18 +255,23 @@ export default class MainScene extends Phaser.Scene {
               }
               dat.rt = dat.event_time - dat.trial_start_time
               dat.choice = dat.key === 'ArrowLeft' ? 1 : 0
+              dat.correct = dat.choice === trial_data.flip
+
               this.input.keyboard.removeAllKeys(true)
 
               this.trial_data = merge_data(dat, trial_data)
               // feedback
               let delay = 500
-              if (dat.choice === trial_data.flip) {
-                this.trial_data.correct = true
+              if (dat.correct) {
                 this.check.visible = true
               } else {
-                this.trial_data.correct = false
                 this.x.visible = true
                 delay += 1000
+              }
+              if (this.is_intro) {
+                this.all_data.warmup.push(this.trial_data)
+              } else {
+                this.all_data.real.push(this.trial_data)
               }
               console.log(this.trial_data)
               this.time.delayedCall(delay, () => {
@@ -246,7 +279,10 @@ export default class MainScene extends Phaser.Scene {
                 this.x.visible = false
                 this.stim.visible = false
                 this.trial_counter += 1
-                this.txt_counter.text = `${this.trial_counter + 1} / ${this.trial_table.length}`
+                if (this.trial_counter < this.trial_table.length) {
+                  this.txt_counter.text = `${this.trial_counter + 1} / ${this.trial_table.length}`
+                }
+
                 this.time.delayedCall(500, () => {
                   this.entering = true
                   // check if we should transition/pause?
@@ -254,16 +290,57 @@ export default class MainScene extends Phaser.Scene {
                     this.txt_counter.visible = false
                     this.state = states.END_SECTION
                   } else if (
+                    // for longer blocks, we'll take a break every 60 trials
                     this.trial_table.length >= 80 &&
-                    this.trial_counter % Math.round(this.trial_table.length / 3) == 0
+                    this.trial_counter % 60 == 0
                   ) {
                     this.state = states.TAKE_A_BREAK
                   }
-                  console.log(this.state)
                 })
               })
             })
           }
+        }
+      case states.TAKE_A_BREAK:
+        if (this.entering) {
+          this.entering = false
+          this.tab.visible = true
+          this.tab.alpha = 1
+          this.time.delayedCall(5000, () => {
+            this.input.keyboard.once('keydown-LEFT', (evt) => {
+              this.tweens.add({
+                targets: [this.tab, this.any_start],
+                alpha: { from: 1, to: 0 },
+                duration: 2000,
+                onComplete: () => {
+                  this.state = states.COUNTDOWN
+                },
+              })
+            })
+          })
+        }
+      case states.END_SECTION:
+        if (this.entering) {
+          this.entering = false
+
+          // fade out
+          this.tweens.addCounter({
+            from: 255,
+            to: 0,
+            duration: 2000,
+            onUpdate: (t) => {
+              let v = Math.floor(t.getValue())
+              this.cameras.main.setAlpha(v / 255)
+            },
+            onComplete: () => {
+              // decide whether to go to endscene or back around
+              if (this.is_intro) {
+                this.scene.start('MainScene', 'not')
+              } else {
+                this.scene.start('EndScene', this.all_data)
+              }
+            },
+          })
         }
     }
   }

@@ -1,5 +1,6 @@
+URL: https://actlab-mirror.netlify.app/
+
 local devel: `npm run start` (no data saving, but everything else)
-(`netlify dev` to try bundled version + netlify fns)
 
 Production test: `npm run build && netlify dev`
 

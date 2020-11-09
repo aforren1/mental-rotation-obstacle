@@ -64,6 +64,9 @@ window.addEventListener('load', () => {
     // TODO: assert prolific ID matches one in localStorage
   }
 
+  // if present at all, we're in debug mode
+  let is_debug = url_params.get('debug') !== null
+
   let user_config = {
     id: id,
     // if not on prolific, might be all null
@@ -76,6 +79,7 @@ window.addEventListener('load', () => {
     height: game.config.height,
     renderer: game.config.renderType === Phaser.CANVAS ? 'canvas' : 'webgl',
     user_agent: new UAParser().getResult(),
+    debug: is_debug,
   }
   game.user_config = user_config // patch in to pass into game
   // set up for user

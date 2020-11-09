@@ -20,6 +20,11 @@ export default class EndScene extends Phaser.Scene {
       })
       .setOrigin(0.5, 0.5)
 
+    let mostly = 'https://app.prolific.co/submissions/complete?cc='
+    this.time.delayedCall(10000, () => {
+      window.location.href = mostly + '4EC98559'
+    })
+
     console.log('Data today:')
     let alldata = { config: this.game.user_config, data: today_data }
     console.log(alldata)
@@ -30,6 +35,5 @@ export default class EndScene extends Phaser.Scene {
         log.error('Forwarding failed HARD')
       }
     })
-    this.scale.stopFullscreen()
   }
 }
