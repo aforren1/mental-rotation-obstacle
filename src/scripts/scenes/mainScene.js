@@ -249,7 +249,7 @@ export default class MainScene extends Phaser.Scene {
           for (let key of ['LEFT', 'RIGHT']) {
             this.input.keyboard.addKey(key).once('down', (evt) => {
               // disable subsequent input
-              console.log(evt)
+              // console.log(evt)
               // check response correctness
               let trial_data = this.trial_table[this.trial_counter]
               let dat = {
@@ -279,7 +279,7 @@ export default class MainScene extends Phaser.Scene {
               } else {
                 this.all_data.real.push(this.trial_data)
               }
-              console.log(this.trial_data)
+              // console.log(this.trial_data)
               this.time.delayedCall(delay, () => {
                 this.check.visible = false
                 this.x.visible = false
